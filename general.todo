@@ -1,0 +1,52 @@
+Sprint goals : 
+    For each of the technogy used inside our light data-fabric, I need to 
+        briefly powerpoint 
+            what it is
+            how it works
+            why we use it
+        install the technology locally
+        and do a micro PoC of it
+
+Technology to investigate : 
+    ☐ PostgreSQL
+    ☐ Cassandra (Time Series)
+    ☐ Airflow
+    ☐ Spark
+    ☐ Kafka
+    ☐ Apache Nifi
+    ☐ Docker
+    ☐ Kubernetes
+
+Windows Linux Bash : 
+    ✔ Install it @done (2018-7-24 15:07:40)
+    Comment : 
+        Launch the bash command for windows cmd prompt to install it the first time
+    Troubleshooting :
+        If you want to reinstall WSL and it doesn't work do :
+            lxrun /uninstall /full
+            then 
+            lxrun /install /y
+            Java WGET option : --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie"
+Cassandra : 
+    ✔ Install it @done (2018-7-26 11:17:04)
+    ✔ Single Node Cluster working @done (2018-7-26 11:17:17)
+    Fonctionnalités clés : 
+        Columnar data model
+        Consistent Hashing
+        Gossip Protocol
+        Hinted Handoff
+        Anti-entropy
+        Tuneable Consistancy
+    Mot-clés : 
+        Replica
+        Node 
+        Cluster
+        
+Docker : 
+    Troubleshooting : 
+        Activate manually Hyper-V and Containers on windows if docker can't activate it itself :
+            Enable-WindowsOptionalFeature -Online -FeatureName containers –All
+            Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V –All
+Kafka :
+
+sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_181/bin/java" 0 && sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.8.0_181/bin/javac" 0 && sudo update-alternatives --set java /usr/lib/jvm/jdk1.8.0_181/bin/java && sudo update-alternatives --set javac /usr/lib/jvm/jdk1.8.0_181/bin/javac
