@@ -8,28 +8,52 @@ Sprint goals :
         and do a micro PoC of it
 
 Technology to investigate : 
-    ☐ PostgreSQL
-    ☐ Cassandra (Time Series)
+    ✔ PostgreSQL @done (2018-8-6 11:53:58)
+    ✔ Cassandra (Time Series) @done (2018-7-31 16:03:35)
     ☐ Airflow
     ☐ Spark
-    ☐ Kafka
+    ✔ Kafka @done (2018-7-31 16:03:37)
     ☐ Apache Nifi
-    ☐ Docker
+    ✔ Docker @done (2018-8-20 09:33:10)
     ☐ Kubernetes
-
-Windows Linux Bash : 
-    ✔ Install it @done (2018-7-24 15:07:40)
-    Comment : 
-        Launch the bash command for windows cmd prompt to install it the first time
-    Troubleshooting :
-        If you want to reinstall WSL and it doesn't work do :
-            lxrun /uninstall /full
-            then 
-            lxrun /install /y
-            Java WGET option : --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie"
+    Version to install : 
+        Java        8 JRE
+        Cassandra	3.11.2
+        PostgreSQL	10.4
+        Kafka       1.1.0
+        Python      2.7
+        Windows     10
+Tips : 
+    Do not use WSL (Windows Subsytem for Linux), setup a Linux VM and use VMWare Player !! 
+    Zsh - Linux User Life Changer : 
+        Install zsh :                   sudo apt install zsh
+        AND install oh my zsh :         sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+        it will change you life 
+    How To mount VMWare shared folder when they appear in vmware-hgfsclient but not in /mnt/hgfs : 
+        You might have to uninstall and reinstall open-vmware-tools 
+        and even patch it by git cloning this : git clone https://github.com/rasa/vmware-tools-patches.git
+        cd in it and then exectue ./patched-open-vm-tools.sh
+        then you can use :
+            vmhgfs-fuse .host:/ /mnt/shared_stuff -o subtype=vmhgfs-fuse,allow_other
+            where /mnt/shared_stuff is where you want the shared folder to be mounted.
+            (Need to do it at each restart)
+    JavaScript : 
+        A way to randomize date with the moment lib: 
+            moment((moment().unix()*1000) - _randInt((1000 * 60 * 60 * 24 *365* min_year), 0)).format("YYYY-MM-DD")
+    Install Portainer : 
+        docker volume create portainer_data
+        docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
+    Useful commande : 
+        docker inspect $(dpsa -q) | grep 'IPAddress\|Image' //List all container ip address and image name
+Install Java 8 on ubuntu : 
+    https://www.vultr.com/docs/how-to-manually-install-java-8-on-ubuntu-16-04
+    add --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" as option for the wget if it doesn't work
+PostgreSQL :
+    sudo -u postgres psql -U lightdf_sql -d lightdf_sql -h localhost -W
 Cassandra : 
-    ✔ Install it @done (2018-7-26 11:17:04)
-    ✔ Single Node Cluster working @done (2018-7-26 11:17:17)
+    ☐ Install it: http://www.admintome.com/blog/install-cassandra-on-ubuntu-18-04 (Creating a user cassandra is a good practice)
+    ☐ Single Node Cluster working
+    ☐ https://www.youtube.com/watch?v=2zBY4OquaOg&t=1565s
     Fonctionnalités clés : 
         Columnar data model
         Consistent Hashing
@@ -41,12 +65,60 @@ Cassandra :
         Replica
         Node 
         Cluster
+
+    Backup : 
+        CREATE KEYSPACE archiver WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1'}  AND durable_writes = true;
+
+        CREATE TABLE archiver.transformator_json_reports (
+            report_id text,
+            timestamp timestamp,
+            report_content text,
+            PRIMARY KEY (report_id, timestamp)
+        ) WITH CLUSTERING ORDER BY (timestamp ASC)
+            AND bloom_filter_fp_chance = 0.01
+            AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+            AND comment = ''
+            AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+            AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+            AND crc_check_chance = 1.0
+            AND dclocal_read_repair_chance = 0.1
+            AND default_time_to_live = 0
+            AND gc_grace_seconds = 864000
+            AND max_index_interval = 2048
+            AND memtable_flush_period_in_ms = 0
+            AND min_index_interval = 128
+            AND read_repair_chance = 0.0
+            AND speculative_retry = '99PERCENTILE';
         
 Docker : 
-    Troubleshooting : 
-        Activate manually Hyper-V and Containers on windows if docker can't activate it itself :
-            Enable-WindowsOptionalFeature -Online -FeatureName containers –All
-            Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V –All
-Kafka :
+    Install on your machine : 
+        Docker
+        Docker-compose
+        Docker-machine
+    Dockerfile template :
+        FROM neito/kafka
 
-sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_181/bin/java" 0 && sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.8.0_181/bin/javac" 0 && sudo update-alternatives --set java /usr/lib/jvm/jdk1.8.0_181/bin/java && sudo update-alternatives --set javac /usr/lib/jvm/jdk1.8.0_181/bin/javac
+        LABEL autor="Willem Houm <willem.houm@gmail.com>" 
+        
+        RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
+        
+        RUN apt-get update
+        
+        RUN apt-get upgrade -y
+        
+
+        
+Kafka :
+    http://blog.d2-si.fr/2015/10/14/apache-kafka/ -Well written introduction to publish/subscribe system with guided tutorial (In French)
+    bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic stuff
+    Exemple : 
+        Create Kafka Topic : 
+          bin/kafka-topics.sh -create -zookeeper localhost:2181 -replication-factor 1 -partitions 1 -topic generic_report.datasource
+          bin/kafka-topics.sh --zookeeper 172.21.0.2:2181 --list
+
+Docker Compose :
+docker_external_pull_data_service   172.19.0.5
+docker_data_input_service 
+ches/kafka                          172.19.0.3
+docker_cassandra                    172.19.0.4
+zookeeper                           172.19.0.2
